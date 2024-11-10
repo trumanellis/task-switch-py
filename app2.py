@@ -148,7 +148,6 @@ TEMPLATE = """
                     <input type="hidden" name="quest_id" value="{{ quest_id }}">
                     <button type="submit" style="border: 1px solid #ccc; padding: 10px; width: 150px; background-color: #f9f9f9;"
                             class="{% if dashboard_data['users'][user_id][3] == quest_id %}active-quest{% endif %} {% if dashboard_data['quests'][loop.index0][2] and dashboard_data['quests'][loop.index0][2].user_id == user_id %}steward-quest{% endif %}">
-                            class="{% if dashboard_data['users'][user_id][3] == quest_id %}active-quest{% endif %}">
                         <h4>{{ quest_id }}</h4>
                         <p>Attention: {{ total_attention_time }}</p>
                         <p>Steward: {{ dashboard_data['quests'][loop.index0][2].user_id if dashboard_data['quests'][loop.index0][2] else 'None' }}</p>

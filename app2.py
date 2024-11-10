@@ -134,10 +134,14 @@ TEMPLATE = """
             <h3>{{ user_id }}</h3>
             <div style="display: flex; flex-wrap: wrap; justify-content: center;">
                 {% for quest_id, total_attention_time, _ in dashboard_data['quests'] %}
-                <div style="border: 1px solid #ccc; padding: 10px; margin: 5px; width: 150px;">
-                    <h4>{{ quest_id }}</h4>
-                    <p>Attention: {{ total_attention_time }}</p>
-                </div>
+                <form method="post" action="{{ url_for('index') }}" style="margin: 5px;">
+                    <input type="hidden" name="user_id" value="{{ user_id }}">
+                    <input type="hidden" name="quest_id" value="{{ quest_id }}">
+                    <button type="submit" style="border: 1px solid #ccc; padding: 10px; width: 150px; background-color: #f9f9f9;">
+                        <h4>{{ quest_id }}</h4>
+                        <p>Attention: {{ total_attention_time }}</p>
+                    </button>
+                </form>
                 {% endfor %}
             </div>
         </div>

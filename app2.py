@@ -121,10 +121,18 @@ TEMPLATE = """
     <title>The Synchronicity Engine</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 5px 0; }
     </style>
 </head>
 <body>
     <h1>The Synchronicity Engine</h1>
+    <h2>Users</h2>
+    <ul>
+        {% for user_id in dashboard_data['user_ids'] %}
+        <li>{{ user_id }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
 """

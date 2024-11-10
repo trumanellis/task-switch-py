@@ -123,7 +123,7 @@ TEMPLATE = """
     </div>
 
     <div class="section">
-        <div class="header">Quest Attention Summary and Stewardship</div>
+        <div class="header">Quests</div>
         <table>
             <tr>
                 <th>Quest ID</th>
@@ -179,7 +179,7 @@ TEMPLATE = """
     </div>
 
     <div class="section">
-        <div class="header">Users and Task Events</div>
+        <div class="header">Users</div>
         <table>
             <tr>
                 <th>User ID</th>
@@ -209,7 +209,7 @@ TEMPLATE = """
     </div>
 
     <div class="section">
-        <div class="header">All Task-Switch Events</div>
+        <div class="header">Task-Switch Events</div>
         <table>
             <tr>
                 <th>Event ID</th>

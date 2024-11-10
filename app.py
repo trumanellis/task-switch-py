@@ -167,10 +167,7 @@ TEMPLATE = """
             <tr>
                 <td>{{ user_id }}</td>
                 <td>{{ gratitude }}</td>
-                <td>
-                    {% for event in events %}
-                        Event '{{ event.event_id }}' -> Quest '{{ event.quest.quest_id }}' at {{ event.timestamp }}<br>
-                    {% endfor %}
+                <td>{{ current_quest }}</td>
                 </td>
                 <td>
                     {% if stewarded_quests %}

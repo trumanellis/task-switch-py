@@ -147,6 +147,14 @@ TEMPLATE = """
         </div>
         {% endfor %}
     </div>
+    <h2>Task Switch Events</h2>
+    <ul>
+        {% for event in dashboard_data['events'] %}
+        <li>
+            Event ID: {{ event.event_id }} | User: {{ event.user.user_id }} | Quest: {{ event.quest.quest_id }} | Timestamp: {{ event.timestamp }}
+        </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
 """

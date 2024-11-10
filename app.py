@@ -146,15 +146,6 @@ TEMPLATE = """
                         <input type="hidden" name="quest_id" value="{{ quest_id }}">
                         <button type="submit">Change Steward</button>
                     </form>
-                    <form action="/claim-steward" method="post" style="display:inline;">
-                        <select name="user_id">
-                            {% for user_id in dashboard_data['user_ids'] %}
-                            <option value="{{ user_id }}">{{ user_id }}</option>
-                            {% endfor %}
-                        </select>
-                        <input type="hidden" name="quest_id" value="{{ quest_id }}">
-                        <button type="submit">Claim</button>
-                    </form>
                 </td>
             </tr>
             {% endfor %}

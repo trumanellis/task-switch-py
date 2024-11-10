@@ -9,12 +9,19 @@ class User:
     def __init__(self, user_id: str):
         self.user_id = user_id
         self.task_events: List['TaskSwitchEvent'] = []
+        self.stewarded_quests: List['Quest'] = []  # List of Quest objects for which this user is the steward
+
+    @property
+    def gratitude(self) -> timedelta:
+        """Calculates the Gratitude stat as the sum of attention times across all stewarded quests."""
+        return sum((quest.total_attention_time for quest in self.stewarded_quests), timedelta())
 
 class Quest:
     def __init__(self, quest_id: str):
         self.quest_id = quest_id
         self.total_attention_time = timedelta()  # Sum of time spent on this quest
         self.task_events: List['TaskSwitchEvent'] = []
+        self.steward: Optional[User] = None  # The steward of the quest
 
 class TaskSwitchEvent:
     def __init__(self, user: User, quest: Quest, previous_event: Optional['TaskSwitchEvent'] = None):
@@ -27,12 +34,9 @@ class TaskSwitchEvent:
 
         # Update quest attention time based on previous event
         if previous_event:
-            # Calculate time difference between events
             self.duration_on_previous_quest = self.timestamp - previous_event.timestamp
-            # Update the total attention time of the previous quest
             previous_event.quest.total_attention_time += self.duration_on_previous_quest
 
-        # Add references to user and quest
         self.user.task_events.append(self)
         self.quest.task_events.append(self)
 
@@ -45,7 +49,6 @@ class CentralizedDatabase:
         self.event_counter = 0  # Counter for generating unique event IDs
 
     def add_task_switch_event(self, user_id: str, quest_id: str):
-        # Retrieve or create user and quest
         user = self.users.get(user_id, User(user_id))
         if user_id not in self.users:
             self.users[user_id] = user
@@ -54,25 +57,30 @@ class CentralizedDatabase:
         if quest_id not in self.quests:
             self.quests[quest_id] = quest
 
-        # Get the user's last event for linking
         previous_event = user.task_events[-1] if user.task_events else None
-
-        # Create new task-switch event with current timestamp
         event = TaskSwitchEvent(user, quest, previous_event)
         
-        # Generate and assign a unique event ID
         event.event_id = f"event_{self.event_counter}"
         self.event_counter += 1
-        
-        # Store the event
         self.events.append(event)
 
+    def claim_stewardship(self, quest_id: str, user_id: str):
+        quest = self.quests.get(quest_id)
+        user = self.users.get(user_id)
+        if quest and user:
+            # Remove old steward's reference if there is one
+            if quest.steward:
+                quest.steward.stewarded_quests.remove(quest)
+            # Set new steward and add quest to their stewarded_quests list
+            quest.steward = user
+            user.stewarded_quests.append(quest)
+
     def get_dashboard_data(self):
-        # Collects dashboard data for rendering
         data = {
-            "quests": [(quest_id, quest.total_attention_time) for quest_id, quest in self.quests.items()],
-            "users": {user_id: [event for event in user.task_events] for user_id, user in self.users.items()},
-            "events": self.events
+            "quests": [(quest_id, quest.total_attention_time, quest.steward) for quest_id, quest in self.quests.items()],
+            "users": {user_id: (user.task_events, user.stewarded_quests, user.gratitude) for user_id, user in self.users.items()},
+            "events": self.events,
+            "user_ids": list(self.users.keys())
         }
         return data
 
@@ -108,16 +116,30 @@ TEMPLATE = """
     </div>
 
     <div class="section">
-        <div class="header">Quest Attention Summary</div>
+        <div class="header">Quest Attention Summary and Stewardship</div>
         <table>
             <tr>
                 <th>Quest ID</th>
                 <th>Total Attention Time</th>
+                <th>Steward</th>
+                <th>Claim Stewardship</th>
             </tr>
-            {% for quest_id, total_attention_time in dashboard_data['quests'] %}
+            {% for quest_id, total_attention_time, steward in dashboard_data['quests'] %}
             <tr>
                 <td>{{ quest_id }}</td>
                 <td>{{ total_attention_time }}</td>
+                <td>{{ steward.user_id if steward else "None" }}</td>
+                <td>
+                    <form action="/claim-steward" method="post" style="display:inline;">
+                        <select name="user_id">
+                            {% for user_id in dashboard_data['user_ids'] %}
+                            <option value="{{ user_id }}">{{ user_id }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" name="quest_id" value="{{ quest_id }}">
+                        <button type="submit">Claim</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </table>
@@ -128,15 +150,27 @@ TEMPLATE = """
         <table>
             <tr>
                 <th>User ID</th>
+                <th>Gratitude</th>
                 <th>Task Events</th>
+                <th>Stewarded Quests</th>
             </tr>
-            {% for user_id, events in dashboard_data['users'].items() %}
+            {% for user_id, (events, stewarded_quests, gratitude) in dashboard_data['users'].items() %}
             <tr>
                 <td>{{ user_id }}</td>
+                <td>{{ gratitude }}</td>
                 <td>
                     {% for event in events %}
                         Event '{{ event.event_id }}' -> Quest '{{ event.quest.quest_id }}' at {{ event.timestamp }}<br>
                     {% endfor %}
+                </td>
+                <td>
+                    {% if stewarded_quests %}
+                        {% for quest in stewarded_quests %}
+                            {{ quest.quest_id }} (Attention Time: {{ quest.total_attention_time }})<br>
+                        {% endfor %}
+                    {% else %}
+                        None
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
@@ -178,6 +212,13 @@ def index():
 
     dashboard_data = db.get_dashboard_data()
     return render_template_string(TEMPLATE, dashboard_data=dashboard_data)
+
+@app.route("/claim-steward", methods=["POST"])
+def claim_steward():
+    user_id = request.form["user_id"]
+    quest_id = request.form["quest_id"]
+    db.claim_stewardship(quest_id, user_id)
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run(debug=True)

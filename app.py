@@ -136,7 +136,7 @@ TEMPLATE = """
                 <td>{{ quest_id }}</td>
                 <td>{{ total_attention_time }}</td>
                 <td>{{ steward.user_id if steward else "None" }}</td>
-                <td>{{ current_quest }}</td>
+                <td>
                     <form action="/claim-steward" method="post" style="display:inline;">
                         <select name="user_id">
                             {% for user_id in dashboard_data['user_ids'] %}
@@ -146,6 +146,7 @@ TEMPLATE = """
                         <input type="hidden" name="quest_id" value="{{ quest_id }}">
                         <button type="submit">Claim</button>
                     </form>
+                </td>
                 </td>
             </tr>
             {% endfor %}

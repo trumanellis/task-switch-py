@@ -128,11 +128,14 @@ TEMPLATE = """
 <body>
     <h1>The Synchronicity Engine</h1>
     <h2>Users</h2>
-    <ul>
+    <div style="display: flex; flex-direction: row; justify-content: space-around;">
         {% for user_id in dashboard_data['user_ids'] %}
-        <li>{{ user_id }}</li>
+        <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
+            <h3>{{ user_id }}</h3>
+            <!-- Additional user-specific data can be added here -->
+        </div>
         {% endfor %}
-    </ul>
+    </div>
 </body>
 </html>
 """

@@ -128,6 +128,10 @@ TEMPLATE = """
             font-weight: bold; /* Bold text for active quest */
             border: 2px solid #f57c00; /* Orange border for emphasis */
         }
+        .steward-quest {
+            font-style: italic;
+            color: green; /* Green text for stewarded quest */
+        }
     </style>
 </head>
 <body>
@@ -142,10 +146,12 @@ TEMPLATE = """
                 <form method="post" action="{{ url_for('index') }}" style="margin: 5px;">
                     <input type="hidden" name="user_id" value="{{ user_id }}">
                     <input type="hidden" name="quest_id" value="{{ quest_id }}">
-                    <button type="submit" style="border: 1px solid #ccc; padding: 10px; width: 150px; background-color: #f9f9f9; {% if dashboard_data['quests'][loop.index0][2] and dashboard_data['quests'][loop.index0][2].user_id == user_id %}font-style: italic;{% endif %}"
+                    <button type="submit" style="border: 1px solid #ccc; padding: 10px; width: 150px; background-color: #f9f9f9;"
+                            class="{% if dashboard_data['users'][user_id][3] == quest_id %}active-quest{% endif %} {% if dashboard_data['quests'][loop.index0][2] and dashboard_data['quests'][loop.index0][2].user_id == user_id %}steward-quest{% endif %}">
                             class="{% if dashboard_data['users'][user_id][3] == quest_id %}active-quest{% endif %}">
                         <h4>{{ quest_id }}</h4>
                         <p>Attention: {{ total_attention_time }}</p>
+                        <p>Steward: {{ dashboard_data['quests'][loop.index0][2].user_id if dashboard_data['quests'][loop.index0][2] else 'None' }}</p>
                     </button>
                 </form>
                 {% endfor %}

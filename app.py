@@ -146,15 +146,6 @@ TEMPLATE = """
                         <input type="hidden" name="quest_id" value="{{ quest_id }}">
                         <button type="submit">Claim</button>
                     </form>
-                <td>
-                    {% if stewarded_quests %}
-                        {% for quest in stewarded_quests %}
-                            {{ quest.quest_id }} (Attention Time: {{ quest.total_attention_time }})<br>
-                        {% endfor %}
-                    {% else %}
-                        None
-                    {% endif %}
-                </td>
                 </td>
             </tr>
             {% endfor %}

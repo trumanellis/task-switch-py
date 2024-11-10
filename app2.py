@@ -142,6 +142,7 @@ TEMPLATE = """
         <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
             <h3>{{ user_id }}</h3>
             <p>Gratitude: {{ dashboard_data['users'][user_id][2] }}</p>
+            <p>Current Quest: {{ dashboard_data['users'][user_id][3] }}</p>
             <div style="display: flex; flex-wrap: wrap; justify-content: center;">
                 {% for quest_id, total_attention_time, _ in dashboard_data['quests'] %}
                 <form method="post" action="{{ url_for('index') }}" style="margin: 5px;">

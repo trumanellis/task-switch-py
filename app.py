@@ -175,7 +175,19 @@ TEMPLATE = """
             <tr>
                 <td>{{ user_id }}</td>
                 <td>{{ gratitude }}</td>
-                <td>{{ current_quest }}</td>
+                <td>
+                    <form action="/" method="post" style="display:inline;">
+                        <select name="quest_id">
+                            {% for quest_id, _, _ in dashboard_data['quests'] %}
+                            <option value="{{ quest_id }}" {% if quest_id == current_quest %}selected{% endif %}>
+                                {{ quest_id }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" name="user_id" value="{{ user_id }}">
+                        <button type="submit">Switch</button>
+                    </form>
+                </td>
                 </td>
                 <td>
                     {% if stewarded_quests %}

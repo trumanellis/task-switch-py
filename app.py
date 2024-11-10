@@ -138,7 +138,6 @@ TEMPLATE = """
                     {% else %}
                         None
                     {% endif %}
-                </td>
                 <td>
                     {% if stewarded_quests %}
                         {% for quest in stewarded_quests %}
@@ -186,9 +185,8 @@ TEMPLATE = """
                 <th>User ID</th>
                 <th>Gratitude</th>
                 <th>Current Quest</th>
-                <th>Task Events</th>
             </tr>
-            {% for user_id, (events, stewarded_quests, gratitude, current_quest) in dashboard_data['users'].items() %}
+            {% for user_id, (_, stewarded_quests, gratitude, current_quest) in dashboard_data['users'].items() %}
             <tr>
                 <td>{{ user_id }}</td>
                 <td>{{ gratitude }}</td>

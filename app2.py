@@ -151,6 +151,12 @@ TEMPLATE = """
                         <h4>{{ quest_id }}</h4>
                         <p>Attention: {{ total_attention_time }}</p>
                         <p>Steward: {{ dashboard_data['quests'][loop.index0][2].user_id if dashboard_data['quests'][loop.index0][2] else 'None' }}</p>
+                        <p>Steward: {{ dashboard_data['quests'][loop.index0][2].user_id if dashboard_data['quests'][loop.index0][2] else 'None' }}</p>
+                        {% if dashboard_data['users'][user_id][3] == quest_id %}
+                        <button type="submit" formaction="{{ url_for('claim_steward') }}" style="background-color: transparent; border: none; cursor: pointer;">
+                            ✅
+                        </button>
+                        {% endif %}
                     </button>
                 </form>
                 {% endfor %}

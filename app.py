@@ -220,7 +220,7 @@ def index():
 
 @app.route("/claim-steward", methods=["POST"])
 def claim_steward():
-    user_id = request.form["user_id"]
+    user_id = "truman"
     quest_id = request.form["quest_id"]
     db.claim_stewardship(quest_id, user_id)
     return redirect(url_for("index"))

@@ -130,6 +130,15 @@ TEMPLATE = """
                 <th>Total Attention Time</th>
                 <th>Steward</th>
                 <th>Claim Stewardship</th>
+                <td>
+                    {% if events %}
+                        {% for event in events %}
+                            {{ event.quest.quest_id }} at {{ event.timestamp }}<br>
+                        {% endfor %}
+                    {% else %}
+                        None
+                    {% endif %}
+                </td>
             </tr>
             {% for quest_id, total_attention_time, steward in dashboard_data['quests'] %}
             <tr>

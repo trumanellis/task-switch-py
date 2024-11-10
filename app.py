@@ -129,14 +129,23 @@ TEMPLATE = """
                 <th>Quest ID</th>
                 <th>Total Attention Time</th>
                 <th>Steward</th>
-                <th>Claim Stewardship</th>
             </tr>
             {% for quest_id, total_attention_time, steward in dashboard_data['quests'] %}
             <tr>
                 <td>{{ quest_id }}</td>
                 <td>{{ total_attention_time }}</td>
-                <td>{{ steward.user_id if steward else "None" }}</td>
                 <td>
+                    <form action="/claim-steward" method="post" style="display:inline;">
+                        <select name="user_id">
+                            {% for user_id in dashboard_data['user_ids'] %}
+                            <option value="{{ user_id }}" {% if steward and user_id == steward.user_id %}selected{% endif %}>
+                                {{ user_id }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" name="quest_id" value="{{ quest_id }}">
+                        <button type="submit">Change Steward</button>
+                    </form>
                     <form action="/claim-steward" method="post" style="display:inline;">
                         <select name="user_id">
                             {% for user_id in dashboard_data['user_ids'] %}

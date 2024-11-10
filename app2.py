@@ -132,11 +132,14 @@ TEMPLATE = """
         {% for user_id in dashboard_data['user_ids'] %}
         <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
             <h3>{{ user_id }}</h3>
-            <ul>
-                {% for quest_id, _, _ in dashboard_data['quests'] %}
-                <li>{{ quest_id }}</li>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+                {% for quest_id, total_attention_time, _ in dashboard_data['quests'] %}
+                <div style="border: 1px solid #ccc; padding: 10px; margin: 5px; width: 150px;">
+                    <h4>{{ quest_id }}</h4>
+                    <p>Attention: {{ total_attention_time }}</p>
+                </div>
                 {% endfor %}
-            </ul>
+            </div>
         </div>
         {% endfor %}
     </div>

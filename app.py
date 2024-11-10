@@ -139,6 +139,15 @@ TEMPLATE = """
                         None
                     {% endif %}
                 </td>
+                <td>
+                    {% if stewarded_quests %}
+                        {% for quest in stewarded_quests %}
+                            {{ quest.quest_id }}<br>
+                        {% endfor %}
+                    {% else %}
+                        None
+                    {% endif %}
+                </td>
             </tr>
             {% for quest_id, total_attention_time, steward in dashboard_data['quests'] %}
             <tr>

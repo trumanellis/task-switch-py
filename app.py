@@ -129,7 +129,12 @@ TEMPLATE = """
 </head>
 <body>
     <h1>Task-Switch Event Dashboard</h1>
-    
+
+    <div class="section">
+        <div class="header">Canvas Tab</div>
+        <a href="{{ url_for('canvas') }}">Go to Canvas</a>
+    </div>
+
     <div class="section">
         <div class="header">Add Task-Switch Event</div>
         <form action="/" method="post">
@@ -244,5 +249,28 @@ def claim_steward():
     db.claim_stewardship(quest_id, user_id)
     return redirect(url_for("index"))
 
-if __name__ == "__main__":
+@app.route("/canvas")
+def canvas():
+    return """
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <title>Canvas</title>
+        <style>
+            body { font-family: Arial, sans-serif; }
+            canvas { border: 1px solid black; }
+        </style>
+    </head>
+    <body>
+        <h1>Canvas</h1>
+        <canvas id="myCanvas" width="500" height="500"></canvas>
+        <script>
+            var canvas = document.getElementById('myCanvas');
+            var context = canvas.getContext('2d');
+            // Add drawing logic here
+        </script>
+        <a href="{{ url_for('index') }}">Back to Dashboard</a>
+    </body>
+    </html>
+    """
     app.run(debug=True)

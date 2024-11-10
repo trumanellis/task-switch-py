@@ -78,7 +78,14 @@ class CentralizedDatabase:
     def get_dashboard_data(self):
         data = {
             "quests": [(quest_id, quest.total_attention_time, quest.steward) for quest_id, quest in self.quests.items()],
-            "users": {user_id: (user.task_events, user.stewarded_quests, user.gratitude) for user_id, user in self.users.items()},
+            "users": {
+                user_id: (
+                    user.task_events,
+                    user.stewarded_quests,
+                    user.gratitude,
+                    user.task_events[-1].quest.quest_id if user.task_events else "None"
+                ) for user_id, user in self.users.items()
+            },
             "events": self.events,
             "user_ids": list(self.users.keys())
         }
@@ -129,7 +136,7 @@ TEMPLATE = """
                 <td>{{ quest_id }}</td>
                 <td>{{ total_attention_time }}</td>
                 <td>{{ steward.user_id if steward else "None" }}</td>
-                <td>
+                <td>{{ current_quest }}</td>
                     <form action="/claim-steward" method="post" style="display:inline;">
                         <select name="user_id">
                             {% for user_id in dashboard_data['user_ids'] %}
@@ -151,10 +158,11 @@ TEMPLATE = """
             <tr>
                 <th>User ID</th>
                 <th>Gratitude</th>
+                <th>Current Quest</th>
                 <th>Task Events</th>
                 <th>Stewarded Quests</th>
             </tr>
-            {% for user_id, (events, stewarded_quests, gratitude) in dashboard_data['users'].items() %}
+            {% for user_id, (events, stewarded_quests, gratitude, current_quest) in dashboard_data['users'].items() %}
             <tr>
                 <td>{{ user_id }}</td>
                 <td>{{ gratitude }}</td>

@@ -48,6 +48,25 @@ class CentralizedDatabase:
         self.events: List[TaskSwitchEvent] = []
         self.event_counter = 0  # Counter for generating unique event IDs
 
+        # Prepopulate with users
+        user1 = User("user_earth")
+        user2 = User("user_sky")
+        self.users[user1.user_id] = user1
+        self.users[user2.user_id] = user2
+
+        # Prepopulate with quests
+        quest1 = Quest("quest_reforest")
+        quest2 = Quest("quest_clean_water")
+        quest3 = Quest("quest_solar_energy")
+        self.quests[quest1.quest_id] = quest1
+        self.quests[quest2.quest_id] = quest2
+        self.quests[quest3.quest_id] = quest3
+
+        # Assign initial stewardship
+        self.claim_stewardship(quest1.quest_id, user1.user_id)
+        self.claim_stewardship(quest2.quest_id, user2.user_id)
+        self.claim_stewardship(quest3.quest_id, user1.user_id)
+
     def add_task_switch_event(self, user_id: str, quest_id: str):
         user = self.users.get(user_id, User(user_id))
         if user_id not in self.users:

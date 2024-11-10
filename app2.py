@@ -86,7 +86,7 @@ class CentralizedDatabase:
     def claim_stewardship(self, quest_id: str, user_id: str):
         quest = self.quests.get(quest_id)
         user = self.users.get(user_id)
-        if quest and user:
+        if quest and user and (quest.steward is None or quest.steward.user_id == user_id):
             # Remove old steward's reference if there is one
             if quest.steward:
                 quest.steward.stewarded_quests.remove(quest)
